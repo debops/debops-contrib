@@ -2,6 +2,7 @@
 
 *Your Debian-based data center in a box*
 
+[debops-logo]: https://raw.githubusercontent.com/debops/debops/master/lib/images/debops-small.png
 
 The DebOps project provides a set of general-purpose [Ansible][ansible] roles
 that can be used to manage [Debian][debian] or [Ubuntu][ubuntu] hosts. In
