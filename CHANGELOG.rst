@@ -24,3 +24,11 @@ Added
 ~~~~~
 
 - Initialization.
+
+- New DebOps Contrib roles:
+
+  - ``debops-contrib.eset_server``: Manage ESET Remote Administrator Server
+    backend.
+
+  - ``debops-contrib.eset_webconsole``: Manage ESET Remote Administrator Web
+    Console.

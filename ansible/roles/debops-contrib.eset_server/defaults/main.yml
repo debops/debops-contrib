@@ -1,0 +1,108 @@
+---
+
+eset_server__fqdn: 'era.{{ eset_server__domain }}'
+
+eset_server__domain: '{{ ansible_local.core.domain
+                         if (ansible_local|d() and ansible_local.core|d() and
+                             ansible_local.core.domain|d())
+                         else (ansible_domain if ansible_domain else ansible_hostname }}'
+
+eset_server__base_packages: [ 'unixodbc', 'libmyodbc', 'xvfb', 'cifs-utils', 'libqtwebkit4' ]
+
+eset_server__packages: []
+
+eset_server__installer: 'https://download.eset.com/download/ra/v6/standalone-installers/server/Server-Linux-x86_64.sh'
+
+eset_server__source_path: '{{ (ansible_local.root.src
+                               if (ansible_local|d() and ansible_local.root|d() and
+                                   ansible_local.root.src|d())
+                               else "/usr/local/src") + "/eset" }}'
+
+# ESET ERA Installer requires root access to the database server, this variable
+# retrieves the MariaDB root password created by the 'debops.mariadb_server'
+# role.
+eset_server__db_admin_password: '{{ lookup("password", secret + "/credentials/" + ansible_fqdn + "/mariadb/" + ansible_local.mariadb.server + "/root/password") }}'
+
+eset_server__database_name: 'eset_era_db'
+eset_server__database_user: 'eset_era_db'
+eset_server__database_password: '{{ lookup("password", secret + "/mariadb/" + ansible_local.mariadb.delegate_to + "/credentials/" + eset_server__database_user + "/password") }}'
+
+# This is the default password to the 'Administrator' account
+eset_server__root_password: '{{ lookup("password", secret + "/credentials/" + inventory_hostname + "/eset_server/root/password") }}'
+
+eset_server__cert_c: 'AA'
+eset_server__cert_st: 'State'
+eset_server__cert_l: 'Location'
+eset_server__cert_o: 'Organization'
+eset_server__cert_ou: 'Organizational Unit'
+eset_server__cert_cn: '{{ eset_server__fqdn }}'
+eset_server__cert_auth_cn: 'Organization CA'
+
+eset_server__locale: 'en_US'
+
+eset_server__port: '2222'
+eset_server__console_port: '2223'
+
+eset_server__allow: []
+eset_server__console_allow: []
+
+eset_server__accept_any: False
+eset_server__console_accept_any: True
+
+eset_server__installer_environment:
+  ESET_SERVER_DB_ADMIN_PASSWORD: '{{ eset_server__db_admin_password }}'
+  ESET_SERVER_DB_USER_PASSWORD: '{{ eset_server__database_password }}'
+  ESET_SERVER_ROOT_PASSWORD: '{{ eset_server__root_password }}'
+
+eset_server__installer_arguments:
+
+  - '--db-name "{{ eset_server__database_name }}"'
+  - '--db-admin-username "root"'
+  - '--db-admin-password "env:ESET_SERVER_DB_ADMIN_PASSWORD"'
+  - '--db-user-username "{{ eset_server__database_user }}"'
+  - '--db-user-password "env:ESET_SERVER_DB_USER_PASSWORD"'
+  - '--server-root-password "env:ESET_SERVER_ROOT_PASSWORD"'
+  - '--cert-country "{{ eset_server__cert_c }}"'
+  - '--cert-state "{{ eset_server__cert_st }}"'
+  - '--cert-locality "{{ eset_server__cert_l }}"'
+  - '--cert-organization "{{ eset_server__cert_o }}"'
+  - '--cert-organizational-unit "{{ eset_server__cert_ou }}"'
+  - '--cert-hostname "{{ eset_server__cert_cn }}"'
+  - '--cert-auth-common-name "{{ eset_server__cert_auth_cn }}"'
+  - '--locale "{{ eset_server__locale }}"'
+  - '--server-port "{{ eset_server__port }}"'
+  - '--console-port "{{ eset_server__console_port }}"'
+  - '--skip-license'
+
+eset_server__etc_services__dependent_list:
+
+  - name: 'era-server'
+    port: '{{ eset_server__port }}'
+    comment: 'ESET Remote Administrator Server'
+
+  - name: 'era-console'
+    port: '{{ eset_server__console_port }}'
+    comment: 'ESET Remote Administrator Console'
+
+eset_server__ferm__dependent_rules:
+
+  - type: 'dport_accept'
+    dport: [ 'era-server' ]
+    saddr: '{{ eset_server__allow }}'
+    accept_any: '{{ eset_server__accept_any | bool }}'
+    weight: '50'
+    filename: 'eset_server_dependency_accept'
+
+  - type: 'dport_accept'
+    dport: [ 'era-console' ]
+    saddr: '{{ eset_server__console_allow }}'
+    accept_any: '{{ eset_server__console_accept_any | bool }}'
+    weight: '50'
+    filename: 'eset_server_console_dependency_accept'
+
+eset_server__mariadb__dependent_users:
+
+  - database: '{{ eset_server__database_name }}'
+    password: '{{ eset_server__database_password }}'
+    user: '{{ eset_server__database_user }}'
+    priv_aux: False

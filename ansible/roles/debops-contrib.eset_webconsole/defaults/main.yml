@@ -1,0 +1,48 @@
+---
+
+eset_webconsole__base_packages: [ 'tomcat8', 'unzip' ]
+
+eset_webconsole__packages: []
+
+eset_webconsole__fqdn: 'era.{{ eset_webconsole__domain }}'
+
+eset_webconsole__domains: '{{ ansible_domain }}'
+
+eset_webconsole__nginx_auth_realm: 'ESET Remote Administrator Web Console'
+eset_webconsole__nginx_access_policy: ''
+
+eset_webconsole__upload_size: '20M'
+
+eset_webconsole__port: '8080'
+
+eset_webconsole__installer: 'https://download.eset.com/download/ra/v6/standalone-installers/webconsole/era.war'
+
+eset_webconsole__source_path: '/usr/local/src/eset'
+
+eset_webconsole__install_path: '/var/lib/tomcat8/webapps/era'
+
+# Configuration for nginx proxy
+eset_webconsole__nginx__dependent_servers:
+
+  - by_role: 'eset_webconsole'
+    enabled: True
+    name: '{{ eset_webconsole__fqdn }}'
+    filename: 'eset_webconsole'
+
+    access_policy: '{{ eset_webconsole__nginx_access_policy }}'
+    auth_basic_realm: '{{ eset_webconsole__nginx_auth_realm }}'
+
+    options: |
+      client_max_body_size {{ eset_webconsole__upload_size }};
+
+    location:
+      '= /': |
+        return 301 $scheme://$host/era;
+
+      '/era': |
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $http_host;
+        proxy_pass       http://127.0.0.1:{{ eset_webconsole__port }};
+    state: 'present'

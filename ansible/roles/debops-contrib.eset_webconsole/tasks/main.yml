@@ -1,0 +1,41 @@
+---
+
+- name: Install prerequisites
+  apt:
+    name: '{{ item }}'
+    state: 'present'
+    install_recommends: False
+  with_flattened:
+    - '{{ eset_webconsole__base_packages }}'
+    - '{{ eset_webconsole__packages }}'
+
+- name: Create source directory
+  file:
+    path: '{{ eset_webconsole__source_path }}'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Download ESET Web Console package
+  get_url:
+    url: '{{ eset_webconsole__installer }}'
+    dest: '{{ eset_webconsole__source_path + "/era.war" }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: Create installation directory
+  file:
+    path: '{{ eset_webconsole__install_path }}'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Install ESET Web Console
+  unarchive:
+    src: '{{ eset_webconsole__source_path + "/era.war" }}'
+    dest: '{{ eset_webconsole__install_path }}'
+    copy: False
+    creates: '{{ eset_webconsole__install_path + "/webconsole" }}'

@@ -1,0 +1,42 @@
+---
+
+- name: Install prerequisites
+  apt:
+    name: '{{ item }}'
+    state: 'present'
+    install_recommends: False
+  with_flattened:
+    - '{{ eset_server__base_packages }}'
+    - '{{ eset_server__packages }}'
+
+- name: Configure ODBC MySQL connection
+  template:
+    src: 'etc/odbcinst.ini.j2'
+    dest: '/etc/odbcinst.ini'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: Create source directory
+  file:
+    path: '{{ eset_server__source_path }}'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Download ESET Remote Administrator Server installer
+  get_url:
+    url: '{{ eset_server__installer }}'
+    dest: '{{ eset_server__source_path + "/eset-server-installer.sh" }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Install ESET Remote Administrator Server
+  environment: '{{ eset_server__installer_environment }}'
+  shell: '{{ eset_server__source_path + "/eset-server-installer.sh "
+             + (eset_server__installer_arguments | join(" ")) }}'
+  args:
+    creates: '/opt/eset/RemoteAdministrator/Server'
+  no_log: True

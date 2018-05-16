@@ -1,0 +1,23 @@
+---
+
+dependencies: []
+
+galaxy_info:
+  author: 'Maciej Delmanowski'
+  description: 'Install and manage ESET Remote Administrator Web Console'
+  company: 'DebOps'
+  license: 'GNU General Public License v3'
+  min_ansible_version: '2.5.0'
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+    - bionic
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+  galaxy_tags:
+    - antivirus
+    - commercial
+    - webservice

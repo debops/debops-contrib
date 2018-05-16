@@ -1,0 +1,25 @@
+---
+
+- name: Manage ESET Remote Administrator Server
+  hosts: [ 'debops_contrib_eset_server' ]
+  become: True
+
+  roles:
+
+    - role: debops.etc_services
+      tags: [ 'role::etc_services' ]
+      etc_services__dependent_list:
+        - '{{ eset_server__etc_services__dependent_list }}'
+
+    - role: debops.ferm
+      tags: [ 'role::ferm' ]
+      ferm__dependent_rules:
+        - '{{ eset_server__ferm__dependent_rules }}'
+
+    - role: debops.mariadb
+      tags: [ 'role::mariadb' ]
+      mariadb__dependent_users:
+        - '{{ eset_server__mariadb__dependent_users }}'
+
+    - role: debops-contrib.eset_server
+      tags: [ 'role::eset_server' ]

@@ -1,0 +1,29 @@
+---
+
+- name: Manage ESET Remote Administrator Web Console service
+  hosts: [ 'debops_contrib_eset_webconsole' ]
+  become: True
+
+  roles:
+
+    - role: debops.apt_preferences
+      tags: [ 'role::apt_preferences' ]
+      apt_preferences__dependent_list:
+        - '{{ java__apt_preferences__dependent_list }}'
+        - '{{ nginx__apt_preferences__dependent_list }}'
+
+    - role: debops.ferm
+      tags: [ 'role::ferm' ]
+      ferm__dependent_rules:
+        - '{{ nginx__ferm__dependent_rules }}'
+
+    - role: debops.nginx
+      tags: [ 'role::nginx' ]
+      nginx__dependent_servers:
+        - '{{ eset_webconsole__nginx__dependent_servers }}'
+
+    - role: debops.java
+      tags: [ 'role::java' ]
+
+    - role: debops-contrib.eset_webconsole
+      tags: [ 'role::eset_webconsole' ]
