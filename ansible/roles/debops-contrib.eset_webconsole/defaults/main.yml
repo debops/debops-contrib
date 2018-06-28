@@ -6,7 +6,7 @@ eset_webconsole__packages: []
 
 eset_webconsole__fqdn: 'era.{{ eset_webconsole__domain }}'
 
-eset_webconsole__domains: '{{ ansible_domain }}'
+eset_webconsole__domain: '{{ ansible_domain }}'
 
 eset_webconsole__nginx_auth_realm: 'ESET Remote Administrator Web Console'
 eset_webconsole__nginx_access_policy: ''
