@@ -12,7 +12,7 @@ You can find the corresponding playbook in the
 ``ansible/playbooks/service/eset_server.yml`` file. The role uses Ansible roles
 from the DebOps project as dependencies.
 
-The ERA server uses MariaDB as a database backend. You can use the
+The ERA server uses MySQL as a database backend. You can use the
 ``debops.mariadb_server`` Ansible role to configure a suitable server. ERA
 requires additional database server configuration:
 
@@ -24,3 +24,5 @@ requires additional database server configuration:
        options:
          'innodb_log_file_size': '200M'
          'max_allowed_packet': '64M'
+
+   mariadb_server__flavor: 'mysql'
