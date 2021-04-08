@@ -1,5 +1,9 @@
 ---
 
+- name: Import DebOps secret role
+  import_role:
+    name: 'secret'
+
 - name: Install prerequisites
   apt:
     name: '{{ item }}'
