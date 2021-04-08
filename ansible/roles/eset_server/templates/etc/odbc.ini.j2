@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[MariaDB-server]
+Description=MariaDB server
+Driver=MariaDB Unicode
+SERVER=localhost
+USER={{ eset_server__database_user }}
+PASSWORD={{ eset_server__database_password }}
+DATABASE={{ eset_server__database_name }}
+PORT=3306

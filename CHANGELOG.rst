@@ -27,8 +27,6 @@ Added
 
 - New DebOps Contrib roles:
 
-  - ``debops-contrib.eset_server``: Manage ESET Remote Administrator Server
-    backend.
+  - ``eset_server``: Manage ESET Security Management Center backend.
 
-  - ``debops-contrib.eset_webconsole``: Manage ESET Remote Administrator Web
-    Console.
+  - ``eset_webconsole``: Manage ESET Security Management Center Console.
