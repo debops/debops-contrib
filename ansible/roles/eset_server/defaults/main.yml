@@ -7,7 +7,7 @@ eset_server__domain: '{{ ansible_local.core.domain
                              ansible_local.core.domain|d())
                          else (ansible_domain if ansible_domain else ansible_hostname) }}'
 
-eset_server__base_packages: [ 'unixodbc', 'libmyodbc', 'xvfb', 'cifs-utils', 'libqtwebkit4' ]
+eset_server__base_packages: [ 'unixodbc', 'odbc-mariadb', 'xvfb', 'cifs-utils', 'libqtwebkit4' ]
 
 eset_server__packages: []
 
@@ -57,6 +57,7 @@ eset_server__installer_environment:
 eset_server__installer_arguments:
 
   - '--db-name "{{ eset_server__database_name }}"'
+  - '--db-driver "MariaDB Unicode"'
   - '--db-admin-username "root"'
   - '--db-admin-password "env:ESET_SERVER_DB_ADMIN_PASSWORD"'
   - '--db-user-username "{{ eset_server__database_user }}"'

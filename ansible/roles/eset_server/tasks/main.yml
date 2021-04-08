@@ -11,8 +11,8 @@
 
 - name: Configure ODBC MySQL connection
   template:
-    src: 'etc/odbcinst.ini.j2'
-    dest: '/etc/odbcinst.ini'
+    src: 'etc/odbc.ini.j2'
+    dest: '/etc/odbc.ini'
     owner: 'root'
     group: 'root'
     mode: '0644'
