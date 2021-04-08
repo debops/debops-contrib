@@ -1,6 +1,6 @@
 ---
 
-eset_webconsole__base_packages: [ 'tomcat8', 'unzip' ]
+eset_webconsole__base_packages: [ 'tomcat9', 'unzip' ]
 
 eset_webconsole__packages: []
 
@@ -19,7 +19,7 @@ eset_webconsole__installer: 'https://download.eset.com/download/ra/v6/standalone
 
 eset_webconsole__source_path: '/usr/local/src/eset'
 
-eset_webconsole__install_path: '/var/lib/tomcat8/webapps/era'
+eset_webconsole__install_path: '/var/lib/tomcat9/webapps/era'
 
 # Configuration for nginx proxy
 eset_webconsole__nginx__dependent_servers:
